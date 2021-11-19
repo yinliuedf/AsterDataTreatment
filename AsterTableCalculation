@@ -1,0 +1,141 @@
+KEY = ''
+KEY2 = ''
+
+tran = open("/home/ranger214/Desktop/thermeca=tran-pres/tran_tableau/tran_"+KEY+".resu", 'r')
+pres = open("/home/ranger214/Desktop/thermeca=tran-pres/pres_tableau/pres_"+KEY+".resu", 'r')
+
+tSIXX = []
+tSIYY = []
+tSIZZ = []
+tSIXY = []
+tSIXZ = []
+tSIYZ = []
+
+pSIXX = []
+pSIYY = []
+pSIZZ = []
+pSIXY = []
+pSIXZ = []
+pSIYZ = []
+
+title = []
+nom_champ = []
+nume_ordre = []
+inst = []
+absc_curv = []
+coor_x = []
+coor_y = []
+coor_z = []
+SIXX = []
+SIYY = []
+SIZZ = []
+SIXY = []
+SIXZ = []
+SIYZ = []
+
+i = 0
+for read in tran.readlines():
+    i = i+1
+    val = read.strip().split(None)
+    if len(val)==14:
+        if val[0]==KEY2:
+            title.append(val[0])
+            nom_champ.append(val[1])
+            nume_ordre.append(int(val[2]))
+            inst.append(float(val[3]))
+            absc_curv.append(float(val[4]))
+            coor_x.append(float(val[5]))
+            coor_y.append(float(val[6]))
+            coor_z.append(float(val[7]))
+            tSIXX.append(float(val[8]))
+            tSIYY.append(float(val[9]))
+            tSIZZ.append(float(val[10]))
+            tSIXY.append(float(val[11]))
+            tSIXZ.append(float(val[12]))
+            tSIYZ.append(float(val[13]))
+        else:
+            continue
+    else:
+        pass
+tran.close()
+
+i = 0
+for read in pres.readlines():
+    i = i+1
+    val = read.strip().split(None)
+    if len(val)==7:
+        if val[0]==KEY2:
+            pSIXX.append(float(val[1]))
+            pSIYY.append(float(val[2]))
+            pSIZZ.append(float(val[3]))
+            pSIXY.append(float(val[4]))
+            pSIXZ.append(float(val[5]))
+            pSIYZ.append(float(val[6]))
+        else:
+            continue
+    else:
+        pass
+pres.close()
+
+i = 0
+for i in range(len(pSIXX)):
+    SIXX.append(float(tSIXX[i] - pSIXX[i]))
+    SIYY.append(float(tSIYY[i] - pSIYY[i]))
+    SIZZ.append(float(tSIZZ[i] - pSIZZ[i]))
+    SIXY.append(float(tSIXY[i] - pSIXY[i]))
+    SIXZ.append(float(tSIXZ[i] - pSIXZ[i]))
+    SIYZ.append(float(tSIYZ[i] - pSIYZ[i]))
+
+thermeca = open("/home/ranger214/Desktop/thermeca=tran-pres/thermeca/thermeca_"+KEY+".resu", 'w')
+thermeca.write('#\n')
+thermeca.write('#--------------------------------------------------------------------------------\n')
+thermeca.write('##DEBUT_TABLE\n')
+thermeca.write('#TITRE ASTER 14.04.00 CONCEPT TABM1 CALCULE LE 30/03/2021 A 10:12:18 DE TYPE           \n')
+thermeca.write('#TITRE TABLE_SDASTER                                                                   \n')
+thermeca.write(' INTITULE         NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY         SIXZ         SIYZ        \n')
+thermeca.write(' K16              K16              I            R            R            R            R            R            R            R            R            R            R            R           \n')
+i = 0
+for i in range(len(title)):
+    if len(title[i])==9:
+        thermeca.write(' %s        %s                   %i  %.5e  %.5e' % (title[i], nom_champ[i], nume_ordre[i], inst[i], absc_curv[i]))
+    elif len(title[i])==8:
+        thermeca.write(' %s         %s                   %i  %.5e  %.5e' % (title[i], nom_champ[i], nume_ordre[i], inst[i], absc_curv[i]))
+    if coor_x[i]>=0:
+        thermeca.write('  %.5e' % (coor_x[i]))
+    else:
+        thermeca.write(' %.5e' % (coor_x[i]))
+    if coor_y[i]>=0:
+        thermeca.write('  %.5e' % (coor_y[i]))
+    else:
+        thermeca.write(' %.5e' % (coor_y[i]))
+    if coor_z[i]>=0:
+        thermeca.write('  %.5e' % (coor_z[i]))
+    else:
+        thermeca.write(' %.5e' % (coor_z[i]))
+    if(SIXX[i]>=0):
+        thermeca.write('  %.5e' % (SIXX[i]))
+    else:
+        thermeca.write(' %.5e' % (SIXX[i]))
+    if(SIYY[i]>=0):
+        thermeca.write('  %.5e' % (SIYY[i]))
+    else:
+        thermeca.write(' %.5e' % (SIYY[i]))
+    if(SIZZ[i]>=0):
+        thermeca.write('  %.5e' % (SIZZ[i]))
+    else:
+        thermeca.write(' %.5E' % SIZZ[i])
+    if(SIXY[i]>=0):
+        thermeca.write('  %.5e' % (SIXY[i]))
+    else:
+        thermeca.write(' %.5E' % SIXY[i])
+    if(SIXZ[i]>=0):
+        thermeca.write('  %.5E' % SIXZ[i])
+    else:
+        thermeca.write(' %.5E' % SIXZ[i])
+    if(SIYZ[i]>=0):
+        thermeca.write('  %.5E\n' % SIYZ[i])
+    else:
+        thermeca.write(' %.5E\n' % SIYZ[i])
+    i = i+1
+thermeca.write('#FIN_TABLE')
+thermeca.close()
