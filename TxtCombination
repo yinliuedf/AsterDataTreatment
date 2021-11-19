@@ -1,0 +1,14 @@
+import os
+import os.path
+
+filedir = '/home/ranger214/Desktop/thermeca=tran-pres/thermeca'
+filelist = os.listdir(filedir)
+filelist.sort(key=lambda x:int(x[9:12]))
+print(filelist)
+
+with open('/home/ranger214/Desktop/thermeca=tran-pres/thermeca.dat', 'w') as f:
+    for filename in filelist:
+        filepath = filedir + '/' + filename
+        for line in open(filepath):
+            f.writelines(line)
+        f.write('\n')
