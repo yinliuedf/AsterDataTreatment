@@ -1,0 +1,37 @@
+import numpy as np
+from numpy import linalg as LA
+
+i = 0
+j = 0
+Title = []
+Time = []
+SIGXX = []
+SIGYY = []
+SIGZZ = []
+SIGXY = []
+SIGXZ = []
+SIGYZ = []
+
+source = open()
+for read in source.readline():
+    j = j+1
+    val = read.strip().split(None)
+    Title.append(val[0])
+    Time.append(val[1])
+    SIGXX.append(float(val[2]))
+    SIGYY.append(float(val[3]))
+    SIGZZ.append(float(val[4]))
+    SIGXY.append(float(val(5)))
+    SIGXZ.append(float(val[6]))
+    SIGYZ.append(float(val[7]))
+source.close()
+
+file = open()
+while i <= len(Time):
+    A = np.array([[SIGXX[i],SIGXY[i],SIGXZ[i]],
+                  [SIGXY[i],SIGYY[i],SIGYZ[i]],
+                  [SIGXZ[i],SIGYZ[i],SIGZZ[i]]])
+    w, v = LA.eig(A)
+    file.write('%s    %s    %s    %s    %s\n' % (Title[i], Time[i], w[0], w[1], w[2]))
+    i = i+1
+file.close()
